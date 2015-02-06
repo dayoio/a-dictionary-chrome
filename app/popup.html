@@ -1,0 +1,72 @@
+<!doctype html>
+<html ng-app="popApp" ng-csp>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <!-- endbower -->
+  <!-- endbuild -->
+  <link rel="stylesheet" href="styles/popup.css"/>
+
+</head>
+<body ng-controller="MasterCtrl">
+
+<form id="query-wrapper" ng-submit="query(word)">
+  <input type="text" class="query-filed" ng-model="word" required placeholder="type..."/>
+  <button type="submit">Define</button>
+</form>
+
+<div id="loading-wrapper" ng-if="status==1">Searching</div>
+<div id="nothing-wrapper" ng-if="status==3">Nothing</div>
+<div id="error-wrapper" ng-if="status==4"></div>
+
+<div id="result-wrapper" ng-if="status==2">
+  <div id="result-header">
+    <div class="trans" ng-if="result.trans">
+      <span class="headword">{{result.trans}}</span>
+      <span class="symbol" ng-if="result.translit">{{result.translit}}</span>
+      <span class="translate-audio"></span>
+    </div>
+    <div class="orig" ng-if="result.orig">
+      <span class="headword">{{result.orig}}</span>
+      <span class="symbol" ng-if="result.origlit">{{result.origlit}}</span>
+      <span class="translate-audio"></span>
+    </div>
+  </div>
+  <div id="result-body">
+    <div class="dict" ng-repeat="d in result.dicts track by $index">
+      <h4 class="dict-title">{{d.title}}</h4>
+      <ul class="dict-body">
+        <li ng-repeat="t in d.types">
+          <p class="synonyms">{{t.pos}}</p>
+          <ol class="related-list">
+            <li ng-repeat="e in t.entry | limitTo:3">
+              <span>{{e.word}}</span>
+              <div ng-if="e.trans" class="word-trans">
+                <a href="#" ng-click="query(o)" ng-repeat="o in (e.trans|limitTo:3) track by $index">{{o}}</a>
+              </div>
+            </li>
+          </ol>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="copyright">Powered by <a href="https://translate.google.com/">Google Translate</a></div>
+</div>
+
+<div class="footer">
+  <p>&copy; 2015 Dict+ <a href="#" ng-click="openOptions()">Extension Options</a></p>
+</div>
+
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/angular/angular.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+<!-- build:js scripts/popup.js -->
+<script src="scripts/popup.js"></script>
+<!-- endbuild -->
+</body>
+</html>

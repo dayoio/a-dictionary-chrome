@@ -1,0 +1,80 @@
+body {
+  font-family: 'Microsoft Yahei', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  background-color: #eee;
+}
+
+.options-wrapper {
+  padding: 40px;
+  margin: 0 auto;
+  background-color: #fff;
+  width: 500px;
+  border: solid 1px #ccc;
+  border-radius: 4px;
+}
+
+.title {
+  text-align: center;
+}
+
+.option-name {
+  font-weight: 700;
+  vertical-align: top;
+  text-align: right;
+  width: 150px;
+  display: inline-block;
+  margin-right: 40px;
+}
+
+.option-value {
+  display: inline-block;
+}
+
+.option-value-secondary {
+  margin-bottom: 30px;
+  margin-left: 20px;
+}
+
+form > div {
+  margin-top: 40px;
+}
+
+.option-btns {
+  text-align: center;
+}
+
+/* 頁腳 */
+.footer {
+  color: #666;
+  font-size: 11px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* 按鈕 */
+button {
+  background-color: #58d;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: normal;
+  padding: 2px 0px;
+  margin: 2px auto;
+  line-height: 20px;
+  border: solid 2px #58d;
+  cursor: pointer;
+  transition: linear 0.2s;
+  transition-property: background-color, color, border-color;
+  outline: none;
+  width: 100px;
+}
+
+button:disabled {
+  background-color: #eee;
+  border-color: #eee;
+  color: #aaa;
+  cursor: default;
+}
+
+button:enabled:hover {
+  background-color: #47b;
+  color: #fff;
+}

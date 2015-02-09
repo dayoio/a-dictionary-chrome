@@ -7,26 +7,25 @@ angular.module('popApp', [])
     $scope.word = '';
     $scope.status = 0;
 
-
     $scope.query = function (w) {
       //設置狀態
       $scope.word = w;
       $scope.status = 1;
       $scope.result = {};
 
-      callBackground(w).then(function (res) {
+      callBackground(w.toLowerCase()).then(function (res) {
         $scope.status = 2;
         $scope.result = res;
       }, function () {
-        $scope.status = 4;
-      })
-    }
+        $scope.status = 3;
+      });
+    };
 
-    function callBackground(w) {
+    function callBackground(q) {
       var d = $q.defer();
       chrome.runtime.sendMessage({
-        act: 'popup',
-        q: w
+        act: 'query',
+        q: q
       }, function (response) {
         if (chrome.runtime.lastError != null) {
           d.reject(chrome.runtime.lastError);
@@ -41,13 +40,27 @@ angular.module('popApp', [])
       return d.promise;
     }
 
-    //$scope.clickQuery = function () {
-    //
-    //}
-
     $scope.openOptions = function () {
       chrome.runtime.sendMessage({act: 'options'});
     }
+
+    $scope.searchBy = function (method, q) {
+      chrome.runtime.sendMessage({act: 'search', method: method, q: q})
+    }
+
+    var b
+    chrome.tabs.getSelected(b, function (a) {
+      chrome.tabs.sendMessage(a.id,
+        {
+          act: "get_selection"
+        }, function (a) {
+          if (a.selection) {
+            $scope.word = a.selection;
+            $scope.$apply();
+            $scope.query(a.selection);
+          }
+        })
+    })
 
   }
 )

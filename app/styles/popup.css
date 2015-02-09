@@ -160,6 +160,7 @@ button:enabled:hover {
 #result-body .dict-body .related-list {
   color: #3c3c3c;
   padding-left: 30px;
+  padding-right: 20px;
 }
 
 .related-list div {

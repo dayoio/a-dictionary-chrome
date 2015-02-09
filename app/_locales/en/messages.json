@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "View definitions easily as you browse the web.",
+    "message": "A dictionary extension for chrome. Better UI and show more content.",
     "description": "The description of the application"
   }
 }

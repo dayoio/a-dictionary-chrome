@@ -1,20 +1,52 @@
 'use strict';
 
-
 angular.module('bgApp', [])
   .controller('bgCtrl', function ($scope, $http, $q) {
 
+    // 查詢 START
     chrome.runtime.onMessage.addListener(function (message, sender, response) {
-      if (message.act === 'fetch') {
+      if (message.act === 'query') {
+        chrome.storage.sync.get({language: 'en'}, function (items) {
+          query(message.q, items.language).then(function (d) {
+            var r = {dicts: []};
+            parse(r, d);
+            parseTrans(r, d);
+            parseDefine(r, d);
+            // 如果查詢的單詞不是en，或者目標語言不是en就查詢多一次en
+            if (r.src !== 'en' && items.language !== 'en') {
+              query(message.q, 'en').then(function (d) {
+                parseTrans(r, d);
+                return response({result: r});
+              }, function () {
+                return response({result: r});
+              })
+            } else
+              return response({result: r});
+          }, function () {
+            return response({error: ''});
+          })
 
-      } else if (message.act === 'popup') {
-        query(message.q, 'zh_CN').then(function (d) {
-          return response({result: d})
-        }, function (err) {
         })
-      } else if (message.act === 'options') {
+      }
+      // 查詢 END
+      // 打開設置頁面 START
+      else if (message.act === 'options') {
         chrome.tabs.create({url: chrome.runtime.getURL("options.html")})
       }
+      // 打開設置頁面 END
+      // 搜索引擎 START
+      else if (message.act === 'search') {
+        if (message.method === 'wiki') {
+          //用my language搜索
+          chrome.storage.sync.get({language: 'en'}, function (items) {
+            chrome.tabs.create({url: 'https://' + items.language.substr(0, 2) + '.wikipedia.org/wiki/' + message.q});
+          })
+        } else {
+          // 默認google
+          chrome.tabs.create({url: 'https://www.google.com/#q=' + message.q});
+        }
+      }
+      // 搜索引擎 END
       return true;
     })
 
@@ -32,11 +64,11 @@ angular.module('bgApp', [])
       $http({
         method: 'GET',
         transformResponse: resTransform,
-        params: {q: encodeURIComponent(q), tl: tl},
+        params: {q: q, tl: tl},
         url: 'https://translate.google.com/translate_a/single?client=t&sl=auto&hl=en&dt=bd&dt=ex&dt=ld&dt=md&dt=qc&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&ssel=0&tsel=3&otf=1&tk=518775|164927'
       })
         .success(function (data, status) {
-          d.resolve(parse(data));
+          d.resolve(data);
         })
         .error(function (data, status) {
           d.reject();
@@ -44,11 +76,9 @@ angular.module('bgApp', [])
       return d.promise;
     }
 
-
-    // 解析獲取到的數據，原數據是數組，轉換成和Google Dictionary的一樣
-    function parse(data) {
-      var r, i, j, d, ed;
-      r = {}
+    // 解析 START
+    function parse(r, data) {
+      var d;
       // 單詞語言
       r.src = data[2];
       // 音標 START
@@ -61,8 +91,10 @@ angular.module('bgApp', [])
         r.origlit = d[1][3];
       }
       // 音標 END
+    }
 
-      r.dicts = [];
+    function parseTrans(r, data) {
+      var a, d, i;
       // 目標語言定義 START
       d = data[1] || "";
       if (angular.isArray(d)) {
@@ -70,7 +102,7 @@ angular.module('bgApp', [])
         for (i = 0; i < d.length; i++) {
           //0: 類型 1: 解釋 2: 同義詞 3: 單詞 4: 排行
           // 類型處理
-          var a = {
+          a = {
             pos: d[i][0],
             terms: d[i][1],
             base_form: d[i][3],
@@ -84,7 +116,11 @@ angular.module('bgApp', [])
         r.dicts.push(tl);
       }
       // 目標語言定義 END
+    }
 
+    // 解析獲取到的數據，原數據是數組，轉換成和Google Dictionary的一樣
+    function parseDefine(r, data) {
+      var d, i;
       // 自定義 START
       d = data[12];
       if (angular.isArray(d)) {
@@ -101,23 +137,30 @@ angular.module('bgApp', [])
         r.dicts.push(sl);
       }
       // 自定義 END
-
-      // 日語定義 START(TODO)
-      // 日語定義 END
-
-      return r;
+      // 同意詞 START
+      d = data[11];
+      if (angular.isArray(d)) {
+        var sy = {title: "Synonyms", types: []};
+        for (i = 0; i < d.length; i++) {
+          var a = {
+            pos: d[i][0],
+            entry: d[i][1].map(function (val) {
+              return {trans: val[0]};
+            })
+          }
+          sy.types.push(a);
+        }
+        r.dicts.push(sy);
+      }
+      // 同意詞 END
     }
 
+    // 日語定義 START(TODO)
+    // 日語定義 END
 
-  })
-
-//chrome.tabs.create({url:chrome.runtime.getURL("options.html")})
+    // 解析 END
+  });
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  //console.log('previousVersion', details.previousVersion);
-
-  //chrome.storage.sync.set({}, function (items) {
-  //
-  //})
 });
 

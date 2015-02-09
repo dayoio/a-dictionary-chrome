@@ -5,7 +5,8 @@ body {
 }
 
 .options-wrapper {
-  padding: 40px;
+  position: relative;
+  padding: 30px 40px 10px 40px;
   margin: 0 auto;
   background-color: #fff;
   width: 500px;
@@ -41,6 +42,12 @@ form > div {
 
 .option-btns {
   text-align: center;
+}
+
+/* 保存提示 */
+.alert {
+  position: absolute;
+  margin: 5px 10px;
 }
 
 /* 頁腳 */

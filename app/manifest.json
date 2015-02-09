@@ -9,7 +9,8 @@
   },
   "default_locale": "en",
   "background": {
-    "page": "background.html"
+    "page": "background.html",
+    "persistent": true
   },
   "browser_action": {
     "default_icon": {
@@ -32,14 +33,13 @@
       "js": [
         "scripts/contentscript.js"
       ],
-      "run_at": "document_end",
+      "run_at": "document_start",
       "all_frames": true
     }
   ],
   "permissions": [
     "tabs",
     "storage",
-    "http://*/*",
-    "https://*/*"
+    "<all_urls>"
   ]
 }

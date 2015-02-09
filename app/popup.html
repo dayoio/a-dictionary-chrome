@@ -12,14 +12,15 @@
 </head>
 <body ng-controller="MasterCtrl">
 
-<form id="query-wrapper" ng-submit="query(word)">
-  <input type="text" class="query-filed" ng-model="word" required placeholder="type..."/>
-  <button type="submit">Define</button>
+<form name="queryForm" id="query-wrapper" ng-submit="query(word)">
+  <input type="text" name="queryInput" class="query-filed" ng-model="word" required placeholder="type..."/>
+  <button type="submit" ng-disabled="!queryForm.queryInput.$valid">Define</button>
 </form>
 
-<div id="loading-wrapper" ng-if="status==1">Searching</div>
-<div id="nothing-wrapper" ng-if="status==3">Nothing</div>
-<div id="error-wrapper" ng-if="status==4"></div>
+<div id="loading-wrapper" ng-if="status==1">Searching...</div>
+<div id="nothing-wrapper" ng-if="status==3">
+  Nothing found. <p>Search by <a href="#" ng-click="searchBy('google', word)">Google</a>, <a href="#" ng-click="searchBy('wiki', word)">Wiki</a></p>
+</div>
 
 <div id="result-wrapper" ng-if="status==2">
   <div id="result-header">
@@ -42,7 +43,7 @@
           <p class="synonyms">{{t.pos}}</p>
           <ol class="related-list">
             <li ng-repeat="e in t.entry | limitTo:3">
-              <span>{{e.word}}</span>
+              <span ng-if="e.word">{{e.word}}</span>
               <div ng-if="e.trans" class="word-trans">
                 <a href="#" ng-click="query(o)" ng-repeat="o in (e.trans|limitTo:3) track by $index">{{o}}</a>
               </div>
@@ -52,7 +53,7 @@
       </ul>
     </div>
   </div>
-  <div class="copyright">Powered by <a href="https://translate.google.com/">Google Translate</a></div>
+  <div class="copyright">Powered by <a href="https://translate.google.com/#auto/" target="_blank">Google Translate</a></div>
 </div>
 
 <div class="footer">

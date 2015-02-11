@@ -48,6 +48,17 @@ angular.module('popApp', [])
       chrome.runtime.sendMessage({act: 'search', method: method, q: q})
     }
 
+    var audio = document.createElement('audio');
+    $scope.play_audio = function (t) {
+      if (t === 'trans') {
+        audio.src = $scope.result.trans_audio;
+        audio.play();
+      } else if (t === 'orig') {
+        audio.src = $scope.result.orig_audio;
+        audio.play();
+      }
+    }
+
     var b
     chrome.tabs.getSelected(b, function (a) {
       chrome.tabs.sendMessage(a.id,

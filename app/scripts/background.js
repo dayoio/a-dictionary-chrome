@@ -12,6 +12,18 @@ angular.module('bgApp', [])
             parse(r, d);
             parseTrans(r, d);
             parseDefine(r, d);
+            //
+            r.trans_audio = r.orig_audio = "";
+            if (r.trans) {
+              r.trans_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&tl=' + items.language + '&q=' + r.trans;
+              if(!r.trans.match(/^\w+/) && r.trans.length > 1)
+                r.trans_audio += '&textlen=' + r.trans.length;
+            }
+            if (r.orig) {
+              r.orig_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&tl=' + r.src + '&q=' + r.orig;
+              if(!r.orig.match(/^\w+/) && r.orig.length > 1)
+                r.orig_audio += '&textlen=' + r.orig.length;
+            }
             // 如果查詢的單詞不是en，或者目標語言不是en就查詢多一次en
             if (r.src !== 'en' && items.language !== 'en') {
               query(message.q, 'en').then(function (d) {
@@ -90,6 +102,8 @@ angular.module('bgApp', [])
         r.orig = d[0][1];
         r.origlit = d[1][3];
       }
+      //
+      //
       // 音標 END
     }
 

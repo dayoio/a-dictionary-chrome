@@ -18,15 +18,15 @@ angular.module('opApp', [])
       $scope.$apply();
     });
 
-    $scope.options_saved = true;
+    $scope.options_saved = false;
 
     //保存設置
     $scope.saveOptions = function () {
-      $scope.options_saved = false;
+      $scope.options_saved = true;
       chrome.storage.sync.set($scope.options, function () {
         console.log('options saved');
         $timeout(function () {
-          $scope.options_saved = true;
+          $scope.options_saved = false;
           $scope.$apply();
         }, 1500)
       })

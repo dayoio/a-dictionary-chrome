@@ -7,7 +7,7 @@
 
 ##安裝
 
-~~[Chrome Web Store](https://www.google.com/)~~
+[Chrome Web Store](https://chrome.google.com/webstore/detail/pjnedjhmfdfkpkkjajemjmdcnkkopkjo)
 
 ##界面
 

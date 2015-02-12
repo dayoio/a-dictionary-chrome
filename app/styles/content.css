@@ -85,12 +85,12 @@
 }
 
 #dict-arrow-inner-up {
-  border-bottom: 10px solid #fff !important;
+  border-bottom: 10px solid #fff;
   top: 1px !important;
 }
 
 #dict-arrow-inner-down {
-  border-top: 10px solid #fff !important;
+  border-top: 10px solid #fff;
   top: -1px !important;
 }
 

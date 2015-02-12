@@ -7,6 +7,7 @@ angular.module('bgApp', [])
     chrome.runtime.onMessage.addListener(function (message, sender, response) {
       if (message.act === 'query') {
         chrome.storage.sync.get({language: 'en'}, function (items) {
+          //message.q = message.q.toLowerCase();
           query(message.q, items.language).then(function (d) {
             var r = {dicts: []};
             parse(r, d);
@@ -15,14 +16,14 @@ angular.module('bgApp', [])
             //
             r.trans_audio = r.orig_audio = "";
             if (r.trans) {
-              r.trans_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&tl=' + items.language + '&q=' + r.trans;
-              if(!r.trans.match(/^\w+/) && r.trans.length > 1)
-                r.trans_audio += '&textlen=' + r.trans.length;
+              r.trans_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + items.language + '&q=' + r.trans;
+              //if (r.trans.length > 1)
+              //  r.trans_audio += '&textlen=' + r.trans.length;
             }
             if (r.orig) {
-              r.orig_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&tl=' + r.src + '&q=' + r.orig;
-              if(!r.orig.match(/^\w+/) && r.orig.length > 1)
-                r.orig_audio += '&textlen=' + r.orig.length;
+              r.orig_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + r.src + '&q=' + r.orig;
+              //if (r.orig.length > 1)
+              //  r.orig_audio += '&textlen=' + r.orig.length;
             }
             // 如果查詢的單詞不是en，或者目標語言不是en就查詢多一次en
             if (r.src !== 'en' && items.language !== 'en') {
@@ -72,6 +73,7 @@ angular.module('bgApp', [])
 
     //請求Google Translate
     function query(q, tl) {
+      if (q.match(/^\w+/)) q = q.toLowerCase();
       var d = $q.defer();
       $http({
         method: 'GET',
@@ -178,3 +180,15 @@ angular.module('bgApp', [])
 chrome.runtime.onInstalled.addListener(function (details) {
 });
 
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  function (details) {
+    if (details.requestHeaders) {
+      for (var i = 0; i < details.requestHeaders.length; i++) {
+        if (details.requestHeaders[i].name == 'Referer') {
+          details.requestHeaders[i].value = "https://translate.google.com/";
+        }
+      }
+    }
+    return {requestHeaders: details.requestHeaders};
+  },
+  {urls: ["https://translate.google.com/*"]}, ['requestHeaders', 'blocking']);

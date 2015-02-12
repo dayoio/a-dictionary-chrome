@@ -13,7 +13,7 @@ angular.module('popApp', [])
       $scope.status = 1;
       $scope.result = {};
 
-      callBackground(w.toLowerCase()).then(function (res) {
+      callBackground(w).then(function (res) {
         $scope.status = 2;
         $scope.result = res;
       }, function () {
@@ -65,7 +65,7 @@ angular.module('popApp', [])
         {
           act: "get_selection"
         }, function (a) {
-          if (a.selection) {
+          if (a && a.selection && a.selection !== "") {
             $scope.word = a.selection;
             $scope.$apply();
             $scope.query(a.selection);

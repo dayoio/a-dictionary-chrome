@@ -218,7 +218,7 @@
               for (var j = 0; j < j_max; j++) {
                 terms += t.types[0].terms[j];
                 if (j < j_max - 1)
-                  terms += ",&nbsp;";
+                  terms += ", ";
               }
               terms += '</p>';
             } else if (t.types[0].entry) {
@@ -232,7 +232,7 @@
       dict.header.innerHTML = head;
       dict.body.innerHTML = terms;
       dict.footer.className = "";
-      dict.footer.innerHTML = '<a target="_blank" href="https://www.google.com/#q=define+' + (d.orig || d.trans ) + '">More &raquo;</a>';
+      dict.footer.innerHTML = '<a target="_blank" href="https://www.google.com/#q=' + (d.orig || d.trans ) + '">More &raquo;</a>';
     } else {
       dict.body.innerHTML = "No definition found.";
     }

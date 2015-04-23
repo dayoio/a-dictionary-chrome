@@ -257,7 +257,6 @@
   var Dict = function () {
 
     var init = function (css) {
-      console.log('init dict');
       //初始化
       var d = document.createElement("div");
       this.view = d.cloneNode(false);

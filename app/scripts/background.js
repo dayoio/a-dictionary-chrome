@@ -10,25 +10,11 @@ angular.module('bgApp', [])
           //message.q = message.q.toLowerCase();
           query(message.q, items.language).then(function (d) {
             var r = {dicts: []};
-            parse(r, d);
-            parseTrans(r, d);
-            parseDefine(r, d);
-            //
-            r.trans_audio = r.orig_audio = "";
-            if (r.trans) {
-              r.trans_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + items.language + '&q=' + r.trans;
-              //if (r.trans.length > 1)
-              //  r.trans_audio += '&textlen=' + r.trans.length;
-            }
-            if (r.orig) {
-              r.orig_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + r.src + '&q=' + r.orig;
-              //if (r.orig.length > 1)
-              //  r.orig_audio += '&textlen=' + r.orig.length;
-            }
+            make(r, d, items.language);
             // 如果查詢的單詞不是en，或者目標語言不是en就查詢多一次en
             if (r.src !== 'en' && items.language !== 'en') {
               query(message.q, 'en').then(function (d) {
-                parseTrans(r, d);
+                make(r, d, 'en');
                 return response({result: r});
               }, function () {
                 return response({result: r});
@@ -36,9 +22,8 @@ angular.module('bgApp', [])
             } else
               return response({result: r});
           }, function () {
-            return response({error: ''});
+            return response({error: 'Nothing found.'});
           })
-
         })
       }
       // 查詢 END
@@ -63,6 +48,21 @@ angular.module('bgApp', [])
       return true;
     })
 
+    //整理
+    function make(r, d, tl) {
+      parse(r, d);
+      parseTrans(r, d);
+      parseDefine(r, d);
+      //
+      r.trans_audio = r.orig_audio = "";
+      if (r.trans) {
+        r.trans_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + tl + '&q=' + r.trans;
+      }
+      if (r.orig) {
+        r.orig_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + r.src + '&q=' + r.orig;
+      }
+    }
+
     //重新處理獲取到的數據
     function resTransform(data) {
       data = data.replace(/(\[,{1,}|,{1,}\]|,{2,})/g, function (val) {
@@ -78,6 +78,7 @@ angular.module('bgApp', [])
       $http({
         method: 'GET',
         transformResponse: resTransform,
+        timeout: 8000,
         params: {q: q, tl: tl},
         url: 'https://translate.google.com/translate_a/single?client=t&sl=auto&hl=en&dt=bd&dt=ex&dt=ld&dt=md&dt=qc&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&ssel=0&tsel=3&otf=1&tk=518775|164927'
       })

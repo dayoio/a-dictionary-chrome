@@ -92,10 +92,10 @@ button:enabled:hover {
   text-overflow: ellipsis;
 }
 
-/* */
+/*
 .orig .symbol:before, .orig .symbol:after {
   content: '/';
-}
+}*/
 
 #result-header .symbol {
   color: #999;

@@ -30,15 +30,10 @@
 
 <div id="result-wrapper" ng-if="status==2">
   <div id="result-header">
-    <div class="trans" ng-if="result.trans">
-      <span class="headword">{{result.trans}}</span>
-      <span class="symbol" ng-if="result.translit">{{result.translit}}</span>
-      <span class="translate-audio" ng-click="play_audio('trans')"></span>
-    </div>
-    <div class="orig" ng-if="result.orig && result.orig != result.trans">
-      <span class="headword">{{result.orig}}</span>
-      <span class="symbol" ng-if="result.origlit">{{result.origlit}}</span>
-      <span class="translate-audio" ng-click="play_audio('orig')"></span>
+    <div class="trans" ng-repeat="t in result.trans">
+      <span class="headword">{{t.word}}</span>
+      <span class="symbol" ng-if="t.symbol">{{t.symbol}}</span>
+      <span class="translate-audio" ng-click="play_audio(t.lan)"></span>
     </div>
   </div>
   <div id="result-body">

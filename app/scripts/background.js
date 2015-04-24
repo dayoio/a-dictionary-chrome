@@ -6,14 +6,15 @@ angular.module('bgApp', [])
     // 查詢 START
     chrome.runtime.onMessage.addListener(function (message, sender, response) {
       if (message.act === 'query') {
-        chrome.storage.sync.get({language: 'en'}, function (items) {
+        chrome.storage.sync.get({language: 'en'}, function (conf) {
           //message.q = message.q.toLowerCase();
-          query(message.q, items.language).then(function (d) {
+          query(message.q, conf.language).then(function (d) {
             var r = {dicts: []};
-            make(r, d, items.language);
-            // 如果查詢的單詞不是en，或者目標語言不是en就查詢多一次en
-            if (r.src !== 'en' && items.language !== 'en') {
+            make(r, d, conf.language);
+            //如果查詢的單詞不是en，或者目標語言不是en就查詢多一次en
+            if (r.src !== 'en' && conf.language !== 'en') {
               query(message.q, 'en').then(function (d) {
+                r.dicts = [];
                 make(r, d, 'en');
                 return response({result: r});
               }, function () {
@@ -50,17 +51,9 @@ angular.module('bgApp', [])
 
     //整理
     function make(r, d, tl) {
-      parse(r, d);
+      parse(r, d, tl);
       parseTrans(r, d);
       parseDefine(r, d);
-      //
-      r.trans_audio = r.orig_audio = "";
-      if (r.trans) {
-        r.trans_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + tl + '&q=' + r.trans;
-      }
-      if (r.orig) {
-        r.orig_audio = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + r.src + '&q=' + r.orig;
-      }
     }
 
     //重新處理獲取到的數據
@@ -92,22 +85,44 @@ angular.module('bgApp', [])
     }
 
     // 解析 START
-    function parse(r, data) {
-      var d;
+    function parse(r, data, tl) {
+      var d, word, symbol, y;
       // 單詞語言
       r.src = data[2];
+      if(r.src == tl)
+        return;
       // 音標 START
       d = data[0]
-      r.trans = d[0][0];
-      r.translit = d[1][2];
-      var o = d[0][1];
-      if (o && ( o !== r.trans || d[1][3] !== "" )) {
-        r.orig = d[0][1];
-        r.origlit = d[1][3];
-      }
-      //
-      //
+
+      if(!r.trans)
+        r.trans = [];
+
+      word = d[0][0];
+      symbol = d[1]?d[1][2]:null;
+      if(word)
+        appendTrans(r, word, symbol, tl);
+
+      word = d[0][1];
+      symbol = d[1]?d[1][3]:null;
+      if(word)
+        appendTrans(r, word, symbol, tl);
+
       // 音標 END
+    }
+
+    function appendTrans(r, w, s, tl)
+    {
+      for(var i=0;i< r.trans.length;i++)
+      {
+        if( w == r.trans[i].word)
+          return;
+      }
+      r.trans.push({
+        'word': w,
+        'symbol': s,
+        'audio': 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + tl + '&q=' + w,
+        'lan': tl
+      })
     }
 
     function parseTrans(r, data) {

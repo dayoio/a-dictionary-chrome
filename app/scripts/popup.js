@@ -50,12 +50,13 @@ angular.module('popApp', [])
 
     var audio = document.createElement('audio');
     $scope.play_audio = function (t) {
-      if (t === 'trans') {
-        audio.src = $scope.result.trans_audio;
-        audio.play();
-      } else if (t === 'orig') {
-        audio.src = $scope.result.orig_audio;
-        audio.play();
+      for (var i = 0; i < $scope.result.trans.length; i++) {
+        var val = $scope.result.trans[i];
+        if (val && val.lan == t) {
+          audio.src = val.audio;
+          audio.play();
+          break;
+        }
       }
     }
 

@@ -193,7 +193,22 @@
     if (data.result) {
       var d = data.result;
 
-      var head = '<div id="trans">';
+      var head = '';
+      dict.audios = [];
+      for(var i=0;i< (d.trans.length);i++)
+      {
+        var t = d.trans[i];
+        head += '<div id="trans">';
+        head += '<span class="headword">' + t.word + '</span>';
+        if(t.symbol) {
+          head += '<span class="symbol">' + t.symbol + '</span>';
+        }
+        head += '<span class="audio" id="audio-' + i + '"></span>';
+        head += '</div>';
+        dict.audios.push(t.audio);
+      }
+
+      /*var head = '<div id="trans">';
       head += '<span class="headword">' + d.trans + '</span>';
       if (d.translit)
         head += '<span class="symbol">' + d.translit + '</span><span class="audio"></span>';
@@ -205,7 +220,7 @@
           head += '<span class="symbol">' + d.origlit + '</span><span class="audio"></span>';
         dict.orig_audio.src = d.orig_audio;
       }
-      head += '</div>';
+      head += '</div>';*/
 
       var terms = "";
       for (var i = 0; i < d.dicts.length; i++) {
@@ -278,13 +293,18 @@
       this.orig_audio = document.createElement("audio");
 
       this.header.onclick = function (e) {
-        if (e.target && e.target.className === "audio" && e.target.parentNode) {
-          //
-          if (e.target.parentNode.id === 'trans') {
+        if (e.target && e.target.className === "audio") {
+          if(e.target.id.indexOf("audio-") == 0) {
+            var i = e.target.id.split('-')[1];
+            this.trans_audio.src = dict.audios[i];
             this.trans_audio.play();
-          } else if (e.target.parentNode.id === 'orig') {
-            this.orig_audio.play();
           }
+          //
+          //if (e.target.parentNode.id === 'trans') {
+          //  this.trans_audio.play();
+          //} else if (e.target.parentNode.id === 'orig') {
+          //  this.orig_audio.play();
+          //}
         }
       }.bind(this);
 

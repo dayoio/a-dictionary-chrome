@@ -105,7 +105,7 @@ angular.module('bgApp', [])
       word = d[0][1];
       symbol = d[1]?d[1][3]:null;
       if(word)
-        appendTrans(r, word, symbol, tl);
+        appendTrans(r, word, symbol, r.src);
 
       // 音標 END
     }

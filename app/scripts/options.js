@@ -12,6 +12,8 @@ angular.module('opApp', [])
       select_key: 'ctrl'
     }
 
+    $scope.ctrlSign = (window.navigator.platform.toLowerCase().indexOf("mac") !== -1) ? "Command" : "Ctrl";
+
     //獲取設置
     chrome.storage.sync.get(def_options, function (items) {
       $scope.options = items;

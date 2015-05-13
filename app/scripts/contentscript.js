@@ -247,7 +247,7 @@
       dict.header.innerHTML = head;
       dict.body.innerHTML = terms;
       dict.footer.className = "";
-      dict.footer.innerHTML = '<a target="_blank" href="https://www.google.com/#q=' + (d.orig || d.trans ) + '">More &raquo;</a>';
+      dict.footer.innerHTML = '<a target="_blank" href="https://www.google.com/#q=' + d.trans[0].word + '">More &raquo;</a>';
     } else {
       dict.body.innerHTML = "No definition found.";
     }

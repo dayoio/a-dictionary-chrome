@@ -52,7 +52,7 @@
           <span>Trigger key:</span>
           <select ng-disabled="!options.dbclick" ng-model="options.dbclick_key">
             <option value="none">None</option>
-            <option value="ctrl">Command</option>
+            <option value="ctrl">{{ctrlSign}}</option>
             <option value="alt">Alt</option>
             <option value="shift">Shift</option>
           </select>
@@ -67,7 +67,7 @@
           <span>Trigger key:</span>
           <select ng-disabled="!options.select" ng-model="options.select_key">
             <option value="none">None</option>
-            <option value="ctrl">Command</option>
+            <option value="ctrl">{{ctrlSign}}</option>
             <option value="alt">Alt</option>
             <option value="shift">Shift</option>
           </select>

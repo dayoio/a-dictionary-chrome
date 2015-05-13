@@ -89,8 +89,8 @@ angular.module('bgApp', [])
       var d, word, symbol, y;
       // 單詞語言
       r.src = data[2];
-      if(r.src == tl)
-        return;
+      //if(r.src == tl)
+      //  return;
       // 音標 START
       d = data[0]
 
@@ -114,7 +114,7 @@ angular.module('bgApp', [])
     {
       for(var i=0;i< r.trans.length;i++)
       {
-        if( w == r.trans[i].word)
+        if( w == r.trans[i].word )
           return;
       }
       r.trans.push({

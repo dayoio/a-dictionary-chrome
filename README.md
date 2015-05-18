@@ -9,7 +9,7 @@
 
 [Chrome Web Store](https://chrome.google.com/webstore/detail/pjnedjhmfdfkpkkjajemjmdcnkkopkjo)
 
-##View
+##UI
 
 ![popup](images/popup.png)
 ![popup](images/popup1.png)

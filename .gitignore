@@ -14,3 +14,4 @@ package
 .jshintrc
 .yo-rc.json
 test/
+dist.zip

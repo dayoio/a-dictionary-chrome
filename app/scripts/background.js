@@ -120,7 +120,7 @@ angular.module('bgApp', [])
       r.trans.push({
         'word': w,
         'symbol': s,
-        'audio': 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + tl + '&q=' + w,
+        'audio': 'https://translate.google.com/translate_tts?ie=UTF-8&client=t&tl=' + tl + '&q=' + w,
         'lan': tl
       })
     }
